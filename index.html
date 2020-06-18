@@ -1,0 +1,74 @@
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://gitcdn.xyz/cdn/angular/bower-material/v1.1.21/angular-material.css">
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body ng-app="movieReviewApp">
+<md-toolbar md-scroll-shrink ng-if="true" ng-controller="DemoCtrl">
+    <div class="md-toolbar-tools">
+        <h3>
+            <span>Stock Price Chart</span>
+        </h3>
+    </div>
+</md-toolbar>
+<div ng-controller="DemoCtrl as ctrl"  layout="column" ng-cloak>
+            <md-content class="md-padding">
+                <form ng-submit="$event.preventDefault()" flex="50" name="reviewForm">
+                    <md-autocomplete
+                            md-floating-label = "Stock Symbol"
+                            md-no-cache="ctrl.noCache"
+                            md-selected-item="ctrl.selectedItem"
+                            md-search-text-change="ctrl.querySearch(ctrl.searchText)"
+                            md-selected-item-change="ctrl.selectedItemQuery(ctrl.selectedItem['1. symbol'])"
+                            md-search-text="ctrl.searchText"
+                            md-input-name = "autocompletefield"
+                            md-items="item in ctrl.data"
+                            md-item-text="item['2. name']"
+                            md-min-length="3">
+                        <md-item-template>
+                            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{item['2. name']}}</span>
+                        </md-item-template>
+                    </md-autocomplete>
+                    <br/>
+                </form>
+                    <div layout="row">
+                        <div flex-xs flex-gt-xs="50" layout="column">
+                            <md-card ng-show="ctrl.selectedResult !== null" ng-repeat="stock in stockList">
+                                <md-card-header>
+                                    <md-card-header-text>
+                                        <span class="md-title">{{stock.data.companyName}}</span>
+                                        <span class="md-subhead">{{stock.data.symbol}}</span>
+                                    </md-card-header-text>
+                                </md-card-header>
+                                <md-card-title>
+                                    <md-card-title-text>
+                                        <span class="md-headline">{{stock.data.latestPrice}}({{stock.data.latestTime}})</span>
+                                        <span class="md-subhead">{{stock.data.primaryExchange}}</span>
+                                    </md-card-title-text>
+                                </md-card-title>
+                                <md-card-content>
+                                    <p>
+                                        US Market Open : {{stock.data.isUSMarketOpen}}
+                                    </p>
+                                </md-card-content>
+                            </md-card>
+                        </div>
+                        <div id="chart_div" flex=""></div>
+                    </div>
+
+            </md-content>
+
+</div>
+<script src="/node_modules/angular/angular.js"></script>
+<script src="/node_modules/angular-route/angular-route.js"></script>
+<script src="/node_modules/angular-aria/angular-aria.js"></script>
+<script src="/node_modules/angular-animate/angular-animate.js"></script>
+<script src="/node_modules/angular-messages/angular-messages.js"></script>
+<script src="/node_modules/angular-material/angular-material.js"></script>
+<script src="core.js"></script>
+</body>
+</html>
