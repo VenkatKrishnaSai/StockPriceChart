@@ -63,10 +63,11 @@ google.charts.load('current', {'packages':['corechart']});
                             else
                             {
                                 $scope.stockList[j].data.latestPrice = result.data.latestPrice;
+                                google.charts.setOnLoadCallback(drawChart($scope.stockList));
                             }
-                        })
+                        });
                     }
-                }, 10000);
+                }, 5000);
 
                 return result;
             })
@@ -100,7 +101,8 @@ google.charts.load('current', {'packages':['corechart']});
             },
             vAxis: {
                 title: 'Stock Name'
-            }
+            },
+            bar: { groupWidth: "30%" }
         };
 
         // Instantiate and draw our chart, passing in some options.
