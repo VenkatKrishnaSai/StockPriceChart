@@ -22,7 +22,7 @@ google.charts.load('current', {'packages':['corechart']});
         .controller('DemoCtrl', DemoCtrl)
 
 
-    function DemoCtrl ($scope,$http,$routeParams,$timeout, $q, $log) {
+    function DemoCtrl ($mdToast,$scope,$http,$routeParams,$timeout, $q, $log) {
         var self = this;
         self.data = null;
         self.selectedItem = null;
@@ -30,6 +30,13 @@ google.charts.load('current', {'packages':['corechart']});
         self.selectedResult = null;
         self.movies = null;
         $scope.stockList = [];
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+        this.toastPosition = angular.extend({}, last);
 
 
 
@@ -58,7 +65,7 @@ google.charts.load('current', {'packages':['corechart']});
                         $http.get('https://cloud.iexapis.com/stable/stock/'+$scope.stockList[j].data.symbol+'/quote?token=pk_6846f423778d41229e263cfc9ccc6ea9').then(function(result){
                             if(result.data.latestPrice === $scope.stockList[j].data.latestPrice)
                             {
-                                console.log('Prices remain same');
+                                showToast($scope.stockList[j].data.companyName);
                             }
                             else
                             {
@@ -67,10 +74,54 @@ google.charts.load('current', {'packages':['corechart']});
                             }
                         });
                     }
-                }, 5000);
+                }, 10000);
 
                 return result;
             })
+        }
+
+        function sanitizePosition() {
+            var current = self.toastPosition;
+
+            if (current.bottom && last.top) {
+                current.top = false;
+            }
+            if (current.top && last.bottom) {
+                current.bottom = false;
+            }
+            if (current.right && last.left) {
+                current.left = false;
+            }
+            if (current.left && last.right) {
+                current.right = false;
+            }
+
+            last = angular.extend({}, current);
+        }
+
+        function getToastPosition() {
+            sanitizePosition();
+
+            return Object.keys(self.toastPosition)
+                .filter(function(pos) {
+                    return self.toastPosition[pos];
+                }).join(' ');
+        }
+
+        function showToast(name)
+        {
+            var pinTo = getToastPosition();
+
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent(name+' Stock Price remains Unchanged')
+                    .position(pinTo)
+                    .hideDelay(3000))
+                .then(function() {
+                    $log.log('Toast dismissed.');
+                }).catch(function() {
+                $log.log('Toast failed or was forced to close early by another toast.');
+            });
         }
     }
 
