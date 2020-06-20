@@ -58,27 +58,32 @@ google.charts.load('current', {'packages':['corechart']});
                 // Set a callback to run when the Google Visualization API is loaded.
                 google.charts.setOnLoadCallback(drawChart($scope.stockList));
 
-                setInterval(function(){
-                    //this code runs every second
-                    for(let j=0;j<$scope.stockList.length;j++)
-                    {
-                        $http.get('https://cloud.iexapis.com/stable/stock/'+$scope.stockList[j].data.symbol+'/quote?token=pk_6846f423778d41229e263cfc9ccc6ea9').then(function(result){
-                            if(result.data.latestPrice === $scope.stockList[j].data.latestPrice)
-                            {
-                                showToast($scope.stockList[j].data.companyName);
-                            }
-                            else
-                            {
-                                $scope.stockList[j].data.latestPrice = result.data.latestPrice;
-                                google.charts.setOnLoadCallback(drawChart($scope.stockList));
-                            }
-                        });
-                    }
-                }, 10000);
-
                 return result;
             })
         }
+
+        setInterval(function(){
+            let count =0;
+            //this code runs every second
+            for(let j=0;j<$scope.stockList.length;j++)
+            {
+                $http.get('https://cloud.iexapis.com/stable/stock/'+$scope.stockList[j].data.symbol+'/quote?token=pk_6846f423778d41229e263cfc9ccc6ea9').then(function(result){
+                    if(result.data.latestPrice === $scope.stockList[j].data.latestPrice)
+                    {
+                        count += 1;
+                    }
+                    else
+                    {
+                        $scope.stockList[j].data.latestPrice = result.data.latestPrice;
+                        google.charts.setOnLoadCallback(drawChart($scope.stockList));
+                    }
+                });
+            }
+            if(count === $scope.stockList.length)
+            {
+                showToast("All Companies");
+            }
+        }, 10000);
 
         function sanitizePosition() {
             var current = self.toastPosition;
@@ -114,9 +119,9 @@ google.charts.load('current', {'packages':['corechart']});
 
             $mdToast.show(
                 $mdToast.simple()
-                    .textContent(name+' Stock Price remains Unchanged')
+                    .textContent(name+' Stock Prices remains Unchanged')
                     .position(pinTo)
-                    .hideDelay(3000))
+                    .hideDelay(5000))
                 .then(function() {
                     $log.log('Toast dismissed.');
                 }).catch(function() {
@@ -138,7 +143,7 @@ google.charts.load('current', {'packages':['corechart']});
         }
         console.log(...resultArray);
         var data = google.visualization.arrayToDataTable([
-            ['Stock Name', 'Todays Price',{ role: 'annotation' } ],
+            ['Stock Name', 'Stock Price',{ role: 'annotation' } ],
                 ...resultArray
         ]);
 
@@ -153,7 +158,7 @@ google.charts.load('current', {'packages':['corechart']});
             vAxis: {
                 title: 'Stock Name'
             },
-            bar: { groupWidth: "30%" }
+            bar: { groupWidth: "40%" }
         };
 
         // Instantiate and draw our chart, passing in some options.
