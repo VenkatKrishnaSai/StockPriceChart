@@ -79,7 +79,7 @@ google.charts.load('current', {'packages':['corechart']});
                     }
                 });
             }
-            if(count === $scope.stockList.length)
+            if(count === $scope.stockList.length && count>0)
             {
                 showToast("All Companies");
             }
@@ -119,7 +119,7 @@ google.charts.load('current', {'packages':['corechart']});
 
             $mdToast.show(
                 $mdToast.simple()
-                    .textContent(name+' Stock Prices remains Unchanged')
+                    .textContent(name+' Stock Prices remains unchanged')
                     .position(pinTo)
                     .hideDelay(5000))
                 .then(function() {
