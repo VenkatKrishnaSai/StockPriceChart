@@ -63,14 +63,18 @@ google.charts.load('current', {'packages':['corechart']});
         }
 
         setInterval(function(){
-            let count =0;
+            let count = 0;
             //this code runs every second
             for(let j=0;j<$scope.stockList.length;j++)
             {
                 $http.get('https://cloud.iexapis.com/stable/stock/'+$scope.stockList[j].data.symbol+'/quote?token=pk_6846f423778d41229e263cfc9ccc6ea9').then(function(result){
                     if(result.data.latestPrice === $scope.stockList[j].data.latestPrice)
                     {
-                        count += 1;
+                        count = count + 1;
+                        if(count === $scope.stockList.length)
+                        {
+                            showToast("All Companies");
+                        }
                     }
                     else
                     {
@@ -78,10 +82,6 @@ google.charts.load('current', {'packages':['corechart']});
                         google.charts.setOnLoadCallback(drawChart($scope.stockList));
                     }
                 });
-            }
-            if(count === $scope.stockList.length && count>0)
-            {
-                showToast("All Companies");
             }
         }, 10000);
 
@@ -121,7 +121,7 @@ google.charts.load('current', {'packages':['corechart']});
                 $mdToast.simple()
                     .textContent(name+' Stock Prices remains unchanged')
                     .position(pinTo)
-                    .hideDelay(5000))
+                    .hideDelay(3000))
                 .then(function() {
                     $log.log('Toast dismissed.');
                 }).catch(function() {
