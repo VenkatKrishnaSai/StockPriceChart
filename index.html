@@ -18,21 +18,11 @@
 <div ng-controller="DemoCtrl as ctrl"  layout="column" ng-cloak>
             <md-content class="md-padding">
                 <form ng-submit="$event.preventDefault()" flex="50" name="reviewForm">
-                    <md-autocomplete
-                            md-floating-label = "Stock Name"
-                            md-no-cache="ctrl.noCache"
-                            md-selected-item="ctrl.selectedItem"
-                            md-search-text-change="ctrl.querySearch(ctrl.searchText)"
-                            md-selected-item-change="ctrl.selectedItemQuery(ctrl.selectedItem['1. symbol'])"
-                            md-search-text="ctrl.searchText"
-                            md-input-name = "autocompletefield"
-                            md-items="item in ctrl.data"
-                            md-item-text="item['2. name']"
-                            md-min-length="3">
-                        <md-item-template>
-                            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{item['2. name']}}</span>
-                        </md-item-template>
-                    </md-autocomplete>
+                    <md-input-container layout="row" class="md-block">
+                        <label>Stock Symbol</label>
+                        <input flex="50" required md-no-asterisk name="symbol" ng-model="stockSymbol">
+                        <md-button ng-click="ctrl.selectedItemQuery(stockSymbol)" class="md-raised md-primary">Add</md-button>
+                    </md-input-container>
                     <br/>
                 </form>
                     <div layout="row">

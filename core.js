@@ -25,6 +25,7 @@ google.charts.load('current', {'packages':['corechart']});
     function DemoCtrl ($mdToast,$scope,$http,$routeParams,$timeout, $q, $log) {
         var self = this;
         self.data = null;
+        $scope.stockSymbol = "";
         self.selectedItem = null;
         self.searchText = null;
         self.selectedResult = null;
@@ -39,22 +40,12 @@ google.charts.load('current', {'packages':['corechart']});
         this.toastPosition = angular.extend({}, last);
 
 
-
-        self.querySearch = function(query)
-        {
-            if(query.length< 3) return;
-            return $http.get('https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords='+escape(query)+'&apikey=9DSDGWGBNQAEJ8R3').then(function(result){
-                self.data = result.data.bestMatches;
-                return result.data.bestMatches;
-            })
-        }
-
         self.selectedItemQuery = function(selectedItem) {
             if (selectedItem === undefined) return;
             return $http.get('https://cloud.iexapis.com/stable/stock/'+escape(selectedItem)+'/quote?token=pk_6846f423778d41229e263cfc9ccc6ea9').then(function (result) {
                 $scope.stockList.push(result);
                 self.selectedResult = result;
-                self.searchText = '';
+                $scope.stockSymbol = "";
                 // Set a callback to run when the Google Visualization API is loaded.
                 google.charts.setOnLoadCallback(drawChart($scope.stockList));
 
